@@ -3,7 +3,7 @@
 # Streisand yamllint wrapper
 #
 # This test script finds all of the *.yml files in the project tree and
-# runs yamllint against them.
+# runs yamllint against them. Ignore any `venv` directory.
 #
 
 # Fail on errors
@@ -11,7 +11,7 @@ set -e
 
 # Ensure yamllint is present
 if ! command -v yamllint > /dev/null 2>&1; then
-    echo "The 'yamllint' comand was not found in your PATH."
+    echo "The 'yamllint' command was not found in your PATH."
     echo "Please run 'pip install yamllint' to install."
     exit 1
 fi
@@ -31,5 +31,5 @@ pushd "$PROJECT_DIR"
   # NOTE(@cpu): While tempting to -exec shellcheck directly from find this will
   # eat-up any non-zero exit codes :-( Instead we find the files first and then
   # xargs yamllint on the found files.
-  find ./ -name '*.yml' -print0 | xargs -0 -n1 yamllint "${YAMLLINT_ARGS[@]}"
+  find . -path "./venv" -prune -or -name '*.yml' -print0 | xargs -0 -n1 yamllint "${YAMLLINT_ARGS[@]}"
 popd
